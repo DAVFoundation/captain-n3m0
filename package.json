@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/DAVFoundation/captain-n3m0#readme",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "mysql": "^2.16.0"
   }
 }
