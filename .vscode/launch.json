@@ -1,0 +1,22 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/server/index.js",
+      "env": {
+        "WEB_SERVER_PORT": "8888",
+        "MYSQL_HOST": "localhost",
+        "MYSQL_USER": "root",
+        "MYSQL_PASSWORD": "example",
+        "MYSQL_DB": "n3m0",
+        "KEY": "0xb57e00b34959a72ccf2131cf0318b413ae457bd2",
+      }
+    }
+  ]
+}
