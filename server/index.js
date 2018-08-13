@@ -44,6 +44,11 @@ app.get('/status/:key/:mission_id', async (req, res) => {
   res.send(req.mission);
 });
 
+app.get('/begin_charging/:key/:mission_id', async (req, res) => {
+  req.mission = updateMissionState(req.mission, 'charging');
+  res.send(req.mission);
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Web server started. Listening on port ${port}`);
