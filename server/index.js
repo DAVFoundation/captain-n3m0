@@ -20,8 +20,7 @@ app.param('mission_id', async function(req, res, next, id) {
   try {
     let mission = await storage.getMission(id);
     // update mission state
-    mission = updateMissionState(mission);
-    req.mission = mission;
+    req.mission = await updateMissionState(mission);
     next();
   } catch(e) {
     next(new Error('Invalid mission id'));
@@ -45,14 +44,14 @@ app.get('/status/:key/:mission_id', async (req, res) => {
 });
 
 app.get('/begin_charging/:key/:mission_id', async (req, res) => {
-  req.mission = updateMissionState(req.mission, 'charging');
+  req.mission = await updateMissionState(req.mission, 'charging');
   res.send(req.mission);
 });
 
 // Define error handler
 app.use(function (err, req, res, next) {
   res.status(500).send({ message: err.message });
-})
+});
 
 // Start server
 app.listen(port, () => {
