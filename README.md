@@ -1,3 +1,5 @@
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/DAVFoundation/DAV-Contributors)
+
 # Captain n3m0
 
 > 🚤 Autonomous boat to DAV network connector
