@@ -49,6 +49,11 @@ app.get('/begin_charging/:key/:mission_id', async (req, res) => {
   res.send(req.mission);
 });
 
+// Define error handler
+app.use(function (err, req, res, next) {
+  res.status(500).send({ message: err.message });
+})
+
 // Start server
 app.listen(port, () => {
   console.log(`Web server started. Listening on port ${port}`);
