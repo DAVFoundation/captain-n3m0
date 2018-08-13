@@ -70,7 +70,7 @@ const updateMission = (mission) => {
       WHERE id = ?`,
       [mission.state, mission.charging_started_at, mission.id],
       function(error, results, fields) {
-        if (error || results.length !== 1) {
+        if (error) {
           reject(error);
         } else {
           resolve();
