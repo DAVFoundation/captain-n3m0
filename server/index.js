@@ -1,3 +1,4 @@
+const { updateMissionState } = require('./model/mission');
 const express = require('express');
 const storage = require('./lib/storage');
 const key = process.env.KEY;
@@ -17,7 +18,9 @@ app.param('key', function(req, res, next, id) {
 
 app.param('mission_id', async function(req, res, next, id) {
   try {
-    const mission = await storage.getMission(id);
+    let mission = await storage.getMission(id);
+    // update mission state
+    mission = updateMissionState(mission);
     req.mission = mission;
     next();
   } catch(e) {
