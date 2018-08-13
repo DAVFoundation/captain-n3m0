@@ -59,7 +59,28 @@ const getMission = async(id) => {
   });
 }
 
+const updateMission = (mission) => {
+  return new Promise((resolve, reject) => {
+    const connection = createConnection(true);
+    connection.query(
+      `UPDATE missions SET
+      state = ?
+      WHERE id = ?`,
+      [mission.state, mission.id],
+      function(error, results, fields) {
+        if (error || results.length !== 1) {
+          reject(error);
+        } else {
+          resolve();
+        }
+        connection.destroy();
+      }
+    );
+  });
+}
+
 module.exports = {
   createNeed,
   getMission,
+  updateMission,
 };
