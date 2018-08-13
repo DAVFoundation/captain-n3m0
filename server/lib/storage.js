@@ -51,6 +51,7 @@ const getMission = async(id) => {
               need_created_at: results[0].need_created_at,
               state: results[0].state,
               charging_started_at: results[0].charging_started_at,
+              charging_completed_at: results[0].charging_completed_at,
             }
           );
         }
@@ -66,9 +67,10 @@ const updateMission = (mission) => {
     connection.query(
       `UPDATE missions SET
       state = ?,
-      charging_started_at = ?
+      charging_started_at = ?,
+      charging_completed_at = ?
       WHERE id = ?`,
-      [mission.state, mission.charging_started_at, mission.id],
+      [mission.state, mission.charging_started_at, mission.charging_completed_at, mission.id],
       function(error, results, fields) {
         if (error) {
           reject(error);
