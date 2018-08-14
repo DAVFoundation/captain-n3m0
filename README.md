@@ -1,5 +1,7 @@
 # Captain n3m0
 
+[![license](https://img.shields.io/github/license/DAVFoundation/captain-n3m0.svg?style=flat-square)](https://github.com/DAVFoundation/captain-n3m0/blob/master/LICENSE)
+
 > 🚤 Autonomous boat to DAV network connector
 
 This project lets the [code](https://github.com/DAVFoundation/n3m0) controlling the n3m0 autonomous boat to connect to the DAV network.
