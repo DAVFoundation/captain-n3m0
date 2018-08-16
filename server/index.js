@@ -3,20 +3,18 @@ const storage = require('./lib/storage');
 
 exports.handler = async function (event, context, callback) {
   const response = generateResponse(callback);
+  const path = event.path.substring(event.path.lastIndexOf('/') + 1);
   const key = process.env.KEY;
-  if (isKeyValid(key, event)) {
-    const path = event.path.substring(1);
-    await mainHandler[path]({event, context, response});
-  } else {
-    response.error(new Error('Invalid Key'));
-  }
+  if (!mainHandler[path]) response.error('Invalid Path');
+  if (!isKeyValid(key, event)) response.error('Invalid Key');
+  await mainHandler[path]({event, context, response});
 };
 
-const isKeyValid = (key, event) => !event.pathParameters || event.pathParameters.key || event.pathParameters.key === key;
+const isKeyValid = (key, event) => !event.queryStringParameters || event.queryStringParameters.key && event.queryStringParameters.key === key;
 
 const getMission = async (event) => {
   try {
-    const mission = await storage.getMission(event.pathParameters.mission_id);
+    const mission = await storage.getMission(event.queryStringParameters.mission_id);
     return mission;
   } catch (e) {
     throw new Error('Invalid mission id');
@@ -50,7 +48,7 @@ const mainHandler = {
 
 const generateResponse = (callback) => ({
   error: (msg) => {
-    callback({
+    callback(null, {
       statusCode: 400,
       body: JSON.stringify(msg),
       headers: {'Content-Type': 'application/json'}
