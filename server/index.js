@@ -1,59 +1,57 @@
 const { updateMissionState } = require('./model/mission');
-const express = require('express');
 const storage = require('./lib/storage');
-const key = process.env.KEY;
+const util = require('util');
 
-// Start Express
-const app = express();
-const port = process.env.WEB_SERVER_PORT || 8888;
+try {
+  exports.handler = async function (event, context, callback) {
+    try {
+      const key = process.env.KEY;
+      if (isKeyValid(key, event)) {
+        const path = event.path.substring(1);
+        await mainHandler[path]({event, context, callback});
+      } else {
+        callback(new Error('Invalid Key'));
+      }
+    } catch (error) {
+      console.log(util.inspect(error));
+    }
+  };
+} catch (error) {
+  console.log(util.inspect(error));
+}
 
-// Validate params
-app.param('key', function(req, res, next, id) {
-  if (id !== key) {
-    next(new Error('Invalid Key'));
-  } else {
-    next();
-  }
-});
+const isKeyValid = (key, event) => !event.pathParameters || !event.pathParameters.key || event.pathParameters.key === key;
 
-app.param('mission_id', async function(req, res, next, id) {
+const getMission = async (event) => {
   try {
-    let mission = await storage.getMission(id);
-    // update mission state
-    req.mission = await updateMissionState(mission);
-    next();
-  } catch(e) {
-    next(new Error('Invalid mission id'));
+    const mission = await storage.getMission(event.pathParameters.mission_id);
+    return mission;
+  } catch (e) {
+    throw new Error('Invalid mission id');
   }
-});
+}
 
-// Define routes
-app.get('/healthy', (req, res) => {
-  res.send('hello world');
-});
-
-app.get('/need/:key', async (req, res) => {
-  const missionId = await storage.createNeed();
-  res.send({
-    missionId
-  });
-});
-
-app.get('/status/:key/:mission_id', async (req, res) => {
-  res.send(req.mission);
-});
-
-app.get('/begin_charging/:key/:mission_id', async (req, res) => {
-  req.mission = await updateMissionState(req.mission, 'charging');
-  res.send(req.mission);
-});
-
-// Define error handler
-app.use(function (err, req, res, next) {
-  res.status(500).send({ message: err.message });
-});
-
-// Start server
-app.listen(port, () => {
-  console.log(`Web server started. Listening on port ${port}`);
-});
+const mainHandler = {
+  healthy: ({callback}) => callback(null, 'Hello World!'),
+  need: ({callback}) => {
+    const missionId = await storage.createNeed();
+    callback(null, { missionId });
+  },
+  status: ({event, callback}) => {
+    try {
+      const mission = await getMission(event);
+      callback(null, mission);
+    } catch (err) {
+      callback(err);
+    }
+  },
+  begin_charging: ({event, callback}) => {
+    try {
+      let mission = await getMission(event);
+      mission = await updateMissionState(mission, 'charging');
+      callback(null, mission);
+    } catch (err) {
+      callback(err);
+    }
+  }
+}
