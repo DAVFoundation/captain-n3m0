@@ -4,7 +4,7 @@
 
 > 🚤 Autonomous boat to DAV network connector
 
-This project lets the [code](https://github.com/DAVFoundation/n3m0) controlling the n3m0 autonomous boat to connect to the DAV network.
+This project lets the [code](https://github.com/DAVFoundation/n3m0) controlling the n3m0 autonomous boat communicate with the DAV network.
 
 ![boat pic](https://github.com/DAVFoundation/n3m0/blob/master/20170615_155019-crop.jpg)
 
