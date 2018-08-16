@@ -8,6 +8,27 @@ This project lets the [code](https://github.com/DAVFoundation/n3m0) controlling 
 
 ![boat pic](https://github.com/DAVFoundation/n3m0/blob/master/20170615_155019-crop.jpg)
 
-## 🚧 WIP
+## Available routes
 
-This project is very much a work-in-progress, don't expect it all to work perfectly or stop changing until this note is updated.
+### Create need - `/need?key={api_key}`
+
+Send this to initiate a new charging mission. It sends a need to the network. The connector will negotiate with bidders, and sign a contract with one of them. At this point the `status` (see `/status` route) should change from `need_sent` to `ready_to_charge`.
+
+#### Returns:
+* The new mission id for the new charging mission.
+* HTTP response code must be 200 or else the boat should try again in a few seconds
+
+### Check status - `/status?key={api_key}&mission_id={id}`
+
+Check the status of a mission/need
+
+#### Possible statuses:
+
+* `need_sent`
+* `ready_to_charge`
+* `charging`
+* `charging_complete`
+
+### arrived at charging - `/begin_charging?key={api_key}&mission_id={id}`
+
+Send this once the boat has arrived at the charging location and is ready to be taken out of the water / plugged in. This will change the status from `ready_to_charge` to `charging`.
