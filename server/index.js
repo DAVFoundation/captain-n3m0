@@ -6,7 +6,7 @@ exports.handler = async function (event, context, callback) {
   const path = event.path.substring(event.path.lastIndexOf('/') + 1);
   const key = process.env.KEY;
   if (!mainHandler[path]) response.error('Invalid Path');
-  if (!isKeyValid(key, event)) response.error('Invalid Key');
+  if (! isKeyValid(key, event)) response.error('Invalid Key');
   await mainHandler[path]({event, context, response});
 };
 
@@ -28,21 +28,15 @@ const mainHandler = {
     response.success({ missionId });
   },
   status: async ({event, response}) => {
-    try {
-      const mission = await getMission(event);
-      response.success(mission);
-    } catch (err) {
-      response.error(err);
-    }
+    const mission = await getMission(event);
+    mission = updateMissionState(mission);
+    response.success(mission);
   },
   begin_charging: async ({event, response}) => {
-    try {
-      let mission = await getMission(event);
-      mission = await updateMissionState(mission, 'charging');
-      response.success(mission);
-    } catch (err) {
-      response.error(err);
-    }
+    let mission = await getMission(event);
+    mission = updateMissionState(mission);
+    mission = updateMissionState(mission, 'charging');
+    response.success(mission);
   }
 };
 
