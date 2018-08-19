@@ -6,7 +6,7 @@ exports.handler = async function (event, context, callback) {
   const path = event.path.substring(event.path.lastIndexOf('/') + 1);
   const key = process.env.KEY;
   if (!mainHandler[path]) response.error('Invalid Path');
-  if (! isKeyValid(key, event)) response.error('Invalid Key');
+  if (!isKeyValid(key, event)) response.error('Invalid Key');
   await mainHandler[path]({event, context, response});
 };
 
