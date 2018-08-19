@@ -28,7 +28,7 @@ const mainHandler = {
     response.success({ missionId });
   },
   status: async ({event, response}) => {
-    const mission = await getMission(event);
+    let mission = await getMission(event);
     mission = updateMissionState(mission);
     response.success(mission);
   },
