@@ -20,8 +20,7 @@ const updateMissionState = (mission, newState = undefined) => {
       }
       break;
     case 'charging':
-      timeElapsed = new Date().getTime() - mission.charging_started_at;
-      if (timeElapsed > CHARGING_TIME) {
+      if (newState === 'charging_complete') {
         mission.state = 'charging_complete';
         mission.charging_completed_at = new Date();
         updateMission(mission);

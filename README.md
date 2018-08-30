@@ -37,3 +37,8 @@ This will change the status from `need_sent` to `ready_to_charge`.
 ### arrived at charging - `/begin_charging?key={api_key}&mission_id={id}`
 
 Send this once the boat has arrived at the charging location and is ready to be taken out of the water / plugged in. This will change the status from `ready_to_charge` to `charging`.
+
+### Finish charging - `/finish_charging?key={api_key}&mission_id={id}`
+
+Send this once the charger has completed charging the boat.
+This will change the status from `charging` to `charging_complete`.
