@@ -7,8 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
-      "program": "${workspaceFolder}/server/index.js",
+      "name": "Run tests",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
       "env": {
         "WEB_SERVER_PORT": "8888",
         "MYSQL_HOST": "localhost",
