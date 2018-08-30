@@ -16,17 +16,21 @@ beforeEach(() => {
   statusEvent = {...event, path: '/status'};
 });
 
-test('health check', async () => {
-  const response = await handler(healthCheckEvent, context);
-  expect(response.statusCode).toBe(200);
-  expect(response.body).toBe('"Hello World!"');
+describe('health check', async () => {
+  test('returns hello world', async () => {
+    const response = await handler(healthCheckEvent, context);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toBe('"Hello World!"');
+  });
 });
 
-test('create need', async () => {
-  const response = await handler(needEvent, context);
-  const body = JSON.parse(response.body);
-  expect(response.statusCode).toBe(200);
-  expect(body.missionId).toBeGreaterThan(0);
+describe('create need', async () => {
+  test('returns the new mission id', async () => {
+    const response = await handler(needEvent, context);
+    const body = JSON.parse(response.body);
+    expect(response.statusCode).toBe(200);
+    expect(body.missionId).toBeGreaterThan(0);
+  });
 });
 
 describe('status check', async () => {
@@ -39,7 +43,7 @@ describe('status check', async () => {
     statusEvent.queryStringParameters.mission_id = missionId;
   });
 
-  test('status', async () => {
+  test('sets the state to need_sent and sets need_created_at to a datetime string', async () => {
     let statusResponse = await handler(statusEvent, context);
     expect(statusResponse.statusCode).toBe(200);
     const statusBody = JSON.parse(statusResponse.body);
