@@ -2,7 +2,13 @@ const { promisify } = require('util');
 const server = require('../server');
 const handler = promisify(server.handler);
 const context = {};
-let event, healthCheckEvent, createNeedEvent, statusEvent, readyToChargeEvent, beginChargingEvent, finishChargingEvent;
+let event,
+  healthCheckEvent,
+  createNeedEvent,
+  statusEvent,
+  readyToChargeEvent,
+  beginChargingEvent,
+  finishChargingEvent;
 
 beforeEach(() => {
   event = {
