@@ -2,7 +2,7 @@ const { promisify } = require('util');
 const server = require('../server');
 const handler = promisify(server.handler);
 const context = {};
-let event, healthCheckEvent, createNeedEvent, statusEvent, readyToChargeEvent;
+let event, healthCheckEvent, createNeedEvent, statusEvent, readyToChargeEvent, beginChargingEvent;
 
 beforeEach(() => {
   event = {
@@ -15,6 +15,7 @@ beforeEach(() => {
   createNeedEvent = { ...event, path: '/need' };
   statusEvent = { ...event, path: '/status' };
   readyToChargeEvent = { ...event, path: '/ready_to_charge' };
+  beginChargingEvent = { ...event, path: '/begin_charging' };
 });
 
 describe('health check', async () => {
@@ -72,6 +73,31 @@ describe('ready to charge', async () => {
       new Date().getFullYear().toString(),
     );
     expect(statusBody.charging_started_at).toBe(null);
+    expect(statusBody.charging_completed_at).toBe(null);
+  });
+});
+
+describe('begin charging', async () => {
+  let needResponse, missionId;
+  beforeEach(async () => {
+    needResponse = await handler(createNeedEvent, context);
+    missionId = JSON.parse(needResponse.body).missionId;
+    readyToChargeEvent.queryStringParameters.mission_id = missionId;
+    beginChargingEvent.queryStringParameters.mission_id = missionId;
+    await handler(readyToChargeEvent, context);
+  });
+
+  test('advances the state to charging', async () => {
+    let statusResponse = await handler(beginChargingEvent, context);
+    expect(statusResponse.statusCode).toBe(200);
+    const statusBody = JSON.parse(statusResponse.body);
+    expect(statusBody.state).toEqual('charging');
+    expect(statusBody.need_created_at).toMatch(
+      new Date().getFullYear().toString(),
+    );
+    expect(statusBody.charging_started_at).toMatch(
+      new Date().getFullYear().toString(),
+    );
     expect(statusBody.charging_completed_at).toBe(null);
   });
 });
