@@ -2,7 +2,7 @@ const { promisify } = require('util');
 const server = require('../server');
 const handler = promisify(server.handler);
 const context = {};
-let event, healthCheckEvent, needEvent, statusEvent, readyToChargeEvent;
+let event, healthCheckEvent, createNeedEvent, statusEvent, readyToChargeEvent;
 
 beforeEach(() => {
   event = {
@@ -12,7 +12,7 @@ beforeEach(() => {
     },
   };
   healthCheckEvent = { ...event, path: '/healthy' };
-  needEvent = { ...event, path: '/need' };
+  createNeedEvent = { ...event, path: '/need' };
   statusEvent = { ...event, path: '/status' };
   readyToChargeEvent = { ...event, path: '/ready_to_charge' };
 });
@@ -27,7 +27,7 @@ describe('health check', async () => {
 
 describe('create need', async () => {
   test('returns the new mission id', async () => {
-    const response = await handler(needEvent, context);
+    const response = await handler(createNeedEvent, context);
     const body = JSON.parse(response.body);
     expect(response.statusCode).toBe(200);
     expect(body.missionId).toBeGreaterThan(0);
@@ -37,7 +37,7 @@ describe('create need', async () => {
 describe('status check', async () => {
   let needResponse, missionId;
   beforeEach(async () => {
-    needResponse = await handler(needEvent, context);
+    needResponse = await handler(createNeedEvent, context);
     missionId = JSON.parse(needResponse.body).missionId;
     statusEvent.queryStringParameters.mission_id = missionId;
   });
@@ -58,7 +58,7 @@ describe('status check', async () => {
 describe('ready to charge', async () => {
   let needResponse, missionId;
   beforeEach(async () => {
-    needResponse = await handler(needEvent, context);
+    needResponse = await handler(createNeedEvent, context);
     missionId = JSON.parse(needResponse.body).missionId;
     readyToChargeEvent.queryStringParameters.mission_id = missionId;
   });
@@ -73,6 +73,5 @@ describe('ready to charge', async () => {
     );
     expect(statusBody.charging_started_at).toBe(null);
     expect(statusBody.charging_completed_at).toBe(null);
-
   });
 });
