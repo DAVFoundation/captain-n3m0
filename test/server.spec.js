@@ -2,7 +2,7 @@ const { promisify } = require("util");
 const server = require('../server');
 const handler = promisify(server.handler);
 const context = {};
-let event, healthCheckEvent, needEvent;
+let event, healthCheckEvent, needEvent, statusEvent;
 
 beforeEach(() => {
   event = {
@@ -13,6 +13,7 @@ beforeEach(() => {
   };
   healthCheckEvent = {...event, path: '/healthy'};
   needEvent = {...event, path: '/need'};
+  statusEvent = {...event, path: '/status'};
 });
 
 test('health check', async () => {
@@ -26,4 +27,25 @@ test('create need', async () => {
   const body = JSON.parse(response.body);
   expect(response.statusCode).toBe(200);
   expect(body.missionId).toBeGreaterThan(0);
+});
+
+describe('status check', async () => {
+
+  let needResponse, missionId;
+
+  beforeEach(async () => {
+    needResponse = await handler(needEvent, context);
+    missionId = JSON.parse(needResponse.body).missionId;
+    statusEvent.queryStringParameters.mission_id = missionId;
+  });
+
+  test('status', async () => {
+    let statusResponse = await handler(statusEvent, context);
+    expect(statusResponse.statusCode).toBe(200);
+    const statusBody = JSON.parse(statusResponse.body);
+    expect(statusBody.state).toEqual('need_sent');
+    expect(statusBody.need_created_at).toMatch(new Date().getFullYear().toString());
+    expect(statusBody.charging_started_at).toBe(null);
+    expect(statusBody.charging_completed_at).toBe(null);
+  });
 });
