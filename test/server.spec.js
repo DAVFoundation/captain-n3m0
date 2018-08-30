@@ -1,4 +1,4 @@
-const { promisify } = require("util");
+const { promisify } = require('util');
 const server = require('../server');
 const handler = promisify(server.handler);
 const context = {};
@@ -8,12 +8,12 @@ beforeEach(() => {
   event = {
     httpMethod: 'GET',
     queryStringParameters: {
-      key: '0xb57e00b34959a72ccf2131cf0318b413ae457bd2'
-    }
+      key: '0xb57e00b34959a72ccf2131cf0318b413ae457bd2',
+    },
   };
-  healthCheckEvent = {...event, path: '/healthy'};
-  needEvent = {...event, path: '/need'};
-  statusEvent = {...event, path: '/status'};
+  healthCheckEvent = { ...event, path: '/healthy' };
+  needEvent = { ...event, path: '/need' };
+  statusEvent = { ...event, path: '/status' };
 });
 
 describe('health check', async () => {
@@ -34,9 +34,7 @@ describe('create need', async () => {
 });
 
 describe('status check', async () => {
-
   let needResponse, missionId;
-
   beforeEach(async () => {
     needResponse = await handler(needEvent, context);
     missionId = JSON.parse(needResponse.body).missionId;
@@ -48,7 +46,9 @@ describe('status check', async () => {
     expect(statusResponse.statusCode).toBe(200);
     const statusBody = JSON.parse(statusResponse.body);
     expect(statusBody.state).toEqual('need_sent');
-    expect(statusBody.need_created_at).toMatch(new Date().getFullYear().toString());
+    expect(statusBody.need_created_at).toMatch(
+      new Date().getFullYear().toString(),
+    );
     expect(statusBody.charging_started_at).toBe(null);
     expect(statusBody.charging_completed_at).toBe(null);
   });
