@@ -60,7 +60,6 @@ describe('ready to charge', async () => {
   beforeEach(async () => {
     needResponse = await handler(needEvent, context);
     missionId = JSON.parse(needResponse.body).missionId;
-    statusEvent.queryStringParameters.mission_id = missionId;
     readyToChargeEvent.queryStringParameters.mission_id = missionId;
   });
 
