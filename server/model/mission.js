@@ -7,8 +7,7 @@ const updateMissionState = (mission, newState = undefined) => {
   let timeElapsed;
   switch (mission.state) {
     case 'need_sent':
-      timeElapsed = new Date().getTime() - mission.need_created_at;
-      if (timeElapsed > BIDDING_TIME) {
+      if (newState === 'ready_to_charge') {
         mission.state = 'ready_to_charge';
         updateMission(mission);
       }

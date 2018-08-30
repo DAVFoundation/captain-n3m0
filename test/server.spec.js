@@ -2,7 +2,7 @@ const { promisify } = require('util');
 const server = require('../server');
 const handler = promisify(server.handler);
 const context = {};
-let event, healthCheckEvent, needEvent, statusEvent;
+let event, healthCheckEvent, needEvent, statusEvent, readyToChargeEvent;
 
 beforeEach(() => {
   event = {
@@ -14,6 +14,7 @@ beforeEach(() => {
   healthCheckEvent = { ...event, path: '/healthy' };
   needEvent = { ...event, path: '/need' };
   statusEvent = { ...event, path: '/status' };
+  readyToChargeEvent = { ...event, path: '/ready_to_charge' };
 });
 
 describe('health check', async () => {
@@ -51,5 +52,28 @@ describe('status check', async () => {
     );
     expect(statusBody.charging_started_at).toBe(null);
     expect(statusBody.charging_completed_at).toBe(null);
+  });
+});
+
+describe('ready to charge', async () => {
+  let needResponse, missionId;
+  beforeEach(async () => {
+    needResponse = await handler(needEvent, context);
+    missionId = JSON.parse(needResponse.body).missionId;
+    statusEvent.queryStringParameters.mission_id = missionId;
+    readyToChargeEvent.queryStringParameters.mission_id = missionId;
+  });
+
+  test('advances the state to ready_to_charge', async () => {
+    let statusResponse = await handler(readyToChargeEvent, context);
+    expect(statusResponse.statusCode).toBe(200);
+    const statusBody = JSON.parse(statusResponse.body);
+    expect(statusBody.state).toEqual('ready_to_charge');
+    expect(statusBody.need_created_at).toMatch(
+      new Date().getFullYear().toString(),
+    );
+    expect(statusBody.charging_started_at).toBe(null);
+    expect(statusBody.charging_completed_at).toBe(null);
+
   });
 });

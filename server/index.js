@@ -32,6 +32,11 @@ const mainHandler = {
     mission = updateMissionState(mission);
     response.success(mission);
   },
+  ready_to_charge: async ({event, response}) => {
+    let mission = await getMission(event);
+    mission = updateMissionState(mission, 'ready_to_charge');
+    response.success(mission);
+  },
   begin_charging: async ({event, response}) => {
     let mission = await getMission(event);
     mission = updateMissionState(mission);
