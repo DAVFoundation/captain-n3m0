@@ -12,9 +12,9 @@ const createConnection = (multipleStatements = false) => {
     password: password,
     database: database,
     timezone: 'utc',
-    multipleStatements: multipleStatements
+    multipleStatements: multipleStatements,
   });
-}
+};
 
 const createNeed = async () => {
   return new Promise((resolve, reject) => {
@@ -25,43 +25,39 @@ const createNeed = async () => {
         if (error) {
           reject(error);
         } else {
-          resolve(
-            results.insertId
-          );
+          resolve(results.insertId);
         }
         connection.destroy();
-      }
+      },
     );
   });
-}
+};
 
-const getMission = async(id) => {
+const getMission = async id => {
   return new Promise((resolve, reject) => {
     const connection = createConnection(true);
-    connection.query(
-      `SELECT * FROM missions WHERE id = ?`,
-      [id],
-      function(error, results, fields) {
-        if (error || results.length !== 1) {
-          reject(error);
-        } else {
-          resolve(
-            {
-              id: results[0].id,
-              need_created_at: results[0].need_created_at,
-              state: results[0].state,
-              charging_started_at: results[0].charging_started_at,
-              charging_completed_at: results[0].charging_completed_at,
-            }
-          );
-        }
-        connection.destroy();
+    connection.query(`SELECT * FROM missions WHERE id = ?`, [id], function(
+      error,
+      results,
+      fields,
+    ) {
+      if (error || results.length !== 1) {
+        reject(error);
+      } else {
+        resolve({
+          id: results[0].id,
+          need_created_at: results[0].need_created_at,
+          state: results[0].state,
+          charging_started_at: results[0].charging_started_at,
+          charging_completed_at: results[0].charging_completed_at,
+        });
       }
-    );
+      connection.destroy();
+    });
   });
-}
+};
 
-const updateMission = (mission) => {
+const updateMission = mission => {
   return new Promise((resolve, reject) => {
     const connection = createConnection(true);
     connection.query(
@@ -70,7 +66,12 @@ const updateMission = (mission) => {
       charging_started_at = ?,
       charging_completed_at = ?
       WHERE id = ?`,
-      [mission.state, mission.charging_started_at, mission.charging_completed_at, mission.id],
+      [
+        mission.state,
+        mission.charging_started_at,
+        mission.charging_completed_at,
+        mission.id,
+      ],
       function(error, results, fields) {
         if (error) {
           reject(error);
@@ -78,10 +79,10 @@ const updateMission = (mission) => {
           resolve();
         }
         connection.destroy();
-      }
+      },
     );
   });
-}
+};
 
 module.exports = {
   createNeed,

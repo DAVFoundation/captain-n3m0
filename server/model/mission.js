@@ -26,10 +26,10 @@ const updateMissionState = (mission, newState = undefined) => {
         updateMission(mission);
       }
       break;
-    }
+  }
   return mission;
-}
+};
 
 module.exports = {
-  updateMissionState
-}
+  updateMissionState,
+};
