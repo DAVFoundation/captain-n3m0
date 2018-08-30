@@ -42,7 +42,7 @@ describe('status check', async () => {
     statusEvent.queryStringParameters.mission_id = missionId;
   });
 
-  test('sets the state to need_sent and sets need_created_at to a datetime string', async () => {
+  test('returns initial state after need creation', async () => {
     let statusResponse = await handler(statusEvent, context);
     expect(statusResponse.statusCode).toBe(200);
     const statusBody = JSON.parse(statusResponse.body);
