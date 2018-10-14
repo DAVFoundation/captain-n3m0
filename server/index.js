@@ -1,71 +1,59 @@
 const { updateMissionState } = require('./model/mission');
+const express = require('express');
 const storage = require('./lib/storage');
+const key = process.env.KEY;
 
-exports.handler = async function(event, context, callback) {
-  const response = generateResponse(callback);
-  const path = event.path.substring(event.path.lastIndexOf('/') + 1);
-  const key = process.env.KEY;
-  if (!mainHandler[path]) response.error('Invalid Path');
-  if (!isKeyValid(key, event)) response.error('Invalid Key');
-  await mainHandler[path]({ event, context, response });
-};
+// Start Express
+const app = express();
+const port = process.env.WEB_SERVER_PORT || 8888;
 
-const isKeyValid = (key, event) =>
-  !event.queryStringParameters ||
-  (event.queryStringParameters.key && event.queryStringParameters.key === key);
-
-const getMission = async event => {
-  try {
-    const mission = await storage.getMission(
-      event.queryStringParameters.mission_id,
-    );
-    return mission;
-  } catch (e) {
-    throw new Error('Invalid mission id');
+// Validate params
+app.param('key', function(req, res, next, id) {
+  if (id !== key) {
+    next(new Error('Invalid Key'));
+  } else {
+    next();
   }
-};
+});
 
-const mainHandler = {
-  healthy: ({ response }) => response.success('Hello World!'),
-  need: async ({ response }) => {
-    const missionId = await storage.createNeed();
-    response.success({ missionId });
-  },
-  status: async ({ event, response }) => {
-    let mission = await getMission(event);
-    mission = updateMissionState(mission);
-    response.success(mission);
-  },
-  ready_to_charge: async ({ event, response }) => {
-    let mission = await getMission(event);
-    mission = updateMissionState(mission, 'ready_to_charge');
-    response.success(mission);
-  },
-  begin_charging: async ({ event, response }) => {
-    let mission = await getMission(event);
-    mission = updateMissionState(mission, 'charging');
-    response.success(mission);
-  },
-  finish_charging: async ({ event, response }) => {
-    let mission = await getMission(event);
-    mission = updateMissionState(mission, 'charging_complete');
-    response.success(mission);
-  },
-};
+app.param('mission_id', async function(req, res, next, id) {
+  try {
+    let mission = await storage.getMission(id);
+    // update mission state
+    req.mission = await updateMissionState(mission);
+    next();
+  } catch (e) {
+    next(new Error('Invalid mission id'));
+  }
+});
 
-const generateResponse = callback => ({
-  error: msg => {
-    callback(null, {
-      statusCode: 400,
-      body: JSON.stringify(msg),
-      headers: { 'Content-Type': 'application/json' },
-    });
-  },
-  success: msg => {
-    callback(null, {
-      statusCode: 200,
-      body: JSON.stringify(msg),
-      headers: { 'Content-Type': 'application/json' },
-    });
-  },
+// Define routes
+app.get('/healthy', (req, res) => {
+  res.send('hello world');
+});
+
+app.get('/need/:key', async (req, res) => {
+  const missionId = await storage.createNeed();
+  res.send({
+    missionId,
+  });
+});
+
+app.get('/status/:key/:mission_id', async (req, res) => {
+  res.send(req.mission);
+});
+
+app.get('/begin_charging/:key/:mission_id', async (req, res) => {
+  req.mission = await updateMissionState(req.mission, 'charging');
+  res.send(req.mission);
+});
+
+// Define error handler
+app.use(function(err, req, res, next) {
+  res.status(500).send({ message: err.message });
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Web server started. Listening on port ${port}`);
 });
