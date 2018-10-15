@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `missions`;
 CREATE TABLE `missions` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `state` enum('need_sent','ready_to_charge','charging','charging_complete') NOT NULL DEFAULT 'need_sent',
