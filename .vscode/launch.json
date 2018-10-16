@@ -12,7 +12,7 @@
         "MYSQL_USER": "root",
         "MYSQL_PASSWORD": "example",
         "MYSQL_DB": "n3m0",
-        "KEY": "0xb57e00b34959a72ccf2131cf0318b413ae457bd2"
+        "CAPTAIN_API_KEY": "0xb57e00b34959a72ccf2131cf0318b413ae457bd2",
       }
     }
   ]

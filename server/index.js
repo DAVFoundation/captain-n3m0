@@ -1,7 +1,7 @@
 const { updateMissionState, createNeed } = require('./model/mission');
 const storage = require('./lib/storage');
 const express = require('express');
-const key = process.env.KEY;
+const apiKey = process.env.CAPTAIN_API_KEY;
 
 // Start Express
 const app = express();
@@ -9,7 +9,7 @@ const port = process.env.WEB_SERVER_PORT || 8888;
 
 // Validate params
 app.param('key', function(req, res, next, id) {
-  if (id !== key) {
+  if (id !== apiKey) {
     next(new Error('Invalid Key'));
   } else {
     next();
