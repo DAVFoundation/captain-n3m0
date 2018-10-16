@@ -13,6 +13,17 @@
         "MYSQL_PASSWORD": "example",
         "MYSQL_DB": "n3m0",
         "CAPTAIN_API_KEY": "0xb57e00b34959a72ccf2131cf0318b413ae457bd2",
+        "SDK_DEBUG_LOG": "true",
+        "API_SEED_URLS": "http://localhost:8080",
+        "KAFKA_SEED_URLS": "localhost:9092",
+        "CHARGER_WALLET_ADDRESS": "0x123456789",
+        "CHARGER_WALLET_PRIVATE_KEY": "0x123456789",
+        "CHARGER_DAV_ID": "0x123456789",
+        "CHARGER_PRIVATE_KEY": "0x123456789",
+        "BOAT_WALLET_ADDRESS": "0x123456789",
+        "BOAT_WALLET_PRIVATE_KEY": "0x123456789",
+        "BOAT_DAV_ID": "0x123456789",
+        "BOAT_PRIVATE_KEY": "0x123456789"
       }
     }
   ]
