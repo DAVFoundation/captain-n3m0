@@ -16,7 +16,7 @@ const createConnection = (multipleStatements = false) => {
   });
 };
 
-const createNeed = async () => {
+const storeNeed = async () => {
   return new Promise((resolve, reject) => {
     const connection = createConnection(true);
     connection.query(
@@ -28,7 +28,7 @@ const createNeed = async () => {
           resolve(results.insertId);
         }
         connection.destroy();
-      },
+      }
     );
   });
 };
@@ -85,7 +85,7 @@ const updateMission = mission => {
 };
 
 module.exports = {
-  createNeed,
+  storeNeed,
   getMission,
   updateMission,
 };

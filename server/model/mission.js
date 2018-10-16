@@ -1,4 +1,8 @@
-const { updateMission } = require('../lib/storage');
+const { updateMission, storeNeed } = require('../lib/storage');
+
+const createNeed = async () => {
+  return storeNeed();
+};
 
 const updateMissionState = (mission, newState = undefined) => {
   switch (mission.state) {
@@ -27,5 +31,6 @@ const updateMissionState = (mission, newState = undefined) => {
 };
 
 module.exports = {
+  createNeed,
   updateMissionState,
 };

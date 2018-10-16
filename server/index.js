@@ -1,6 +1,5 @@
-const { updateMissionState } = require('./model/mission');
+const { updateMissionState, createNeed } = require('./model/mission');
 const express = require('express');
-const storage = require('./lib/storage');
 const key = process.env.KEY;
 
 // Start Express
@@ -33,7 +32,7 @@ app.get('/healthy', (req, res) => {
 });
 
 app.get('/need/:key', async (req, res) => {
-  const missionId = await storage.createNeed();
+  const missionId = await createNeed();
   res.send({
     missionId,
   });
