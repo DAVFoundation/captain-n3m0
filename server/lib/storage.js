@@ -28,7 +28,7 @@ const storeNeed = async () => {
           resolve(results.insertId);
         }
         connection.destroy();
-      }
+      },
     );
   });
 };
