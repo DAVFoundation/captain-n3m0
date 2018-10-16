@@ -43,8 +43,18 @@ app.get('/status/:key/:mission_id', async (req, res) => {
   res.send(req.mission);
 });
 
+app.get('/ready_to_charge/:key/:mission_id', async (req, res) => {
+  req.mission = updateMissionState(req.mission, 'ready_to_charge');
+  res.send(req.mission);
+});
+
 app.get('/begin_charging/:key/:mission_id', async (req, res) => {
   req.mission = await updateMissionState(req.mission, 'charging');
+  res.send(req.mission);
+});
+
+app.get('/finish_charging/:key/:mission_id', async (req, res) => {
+  req.mission = updateMissionState(req.mission, 'charging_complete');
   res.send(req.mission);
 });
 
