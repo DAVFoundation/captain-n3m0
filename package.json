@@ -18,6 +18,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "dav-js": "DAVFoundation/dav-js",
     "express": "^4.16.3",
     "mysql": "^2.16.0"
   }
